@@ -134,14 +134,14 @@ class GraphClass {
   }
 
   onScaleEvent() {
-    $("#" + this.canvasId).on("mousewheel", function (e) {
-      canvasOne.graphScaling(e);
+    $("#" + this.canvasId).on("mousewheel", (e) => {
+      this.graphScaling(e);
     });
   }
 
   onMoveEvent() {
-    $("#" + this.canvasId).on("mousemove mousedown mouseup", function (e) {
-      canvasOne.graphMoving(e);
+    $("#" + this.canvasId).on("mousemove mousedown mouseup", (e) => {
+      this.graphMoving(e);
     });
   }
 
@@ -169,11 +169,24 @@ $(document).ready(function () {
 });
 
 let canvasOne = new GraphClass("canvas");
+let canvasTwo = new GraphClass("polarCanvas");
+let canvasThree = new GraphClass("wavesCanvas");
+let canvasFour = new GraphClass("freqCanvas");
 
 function startUp() {
   canvasOne.trigFuncX = trigGraphFunctionX;
   canvasOne.trigFuncY = trigGraphFunctionY;
   canvasOne.canvasInit();
+
+  canvasTwo.trigFuncX = (x) => Math.cos(x * 2) + Math.cos(x * 5);
+  canvasTwo.trigFuncY = (y) => y;
+  canvasTwo.canvasInit();
+
+  canvasThree.trigFuncY = (x) => Math.cos(x * 2) + Math.cos(x * 5);
+  canvasThree.trigFuncX = (y) => y;
+  canvasThree.canvasInit();
+
+  canvasFour.canvasInit();
 }
 
 function trigGraphFunctionY(x) {

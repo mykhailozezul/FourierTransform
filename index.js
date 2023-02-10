@@ -1,26 +1,23 @@
 import { GraphClass } from "./GraphClass.js";
+import { FourierClass } from "./FourierClass.js";
 
 $(document).ready(function () {
   startUp();
 });
 
-let canvasOne = new GraphClass("canvas");
 let canvasTwo = new GraphClass("polarCanvas");
 
+let funcTwo = new FourierClass(
+  (x) => Math.sin(x * 8) + Math.sin(x * 6),
+  0,
+  360,
+  "rgb(200,50,50)"
+);
+
 function startUp() {
-  canvasOne.trigFuncX = trigGraphFunctionX;
-  canvasOne.trigFuncY = trigGraphFunctionY;
-  canvasOne.canvasInit();
-
-  canvasTwo.trigFuncX = (x) => Math.cos(x) * Math.sin(x * 5);
-  canvasTwo.trigFuncY = (y) => Math.sin(y) * Math.sin(y * 5);
+  canvasTwo.trigFunc = funcTwo.cartFunc();
   canvasTwo.canvasInit();
-}
+  canvasTwo.scale = 65;
 
-function trigGraphFunctionY(x) {
-  return Math.sin(x * 5);
-}
-
-function trigGraphFunctionX(x) {
-  return x;
+  //funcTwo.animateFunction(300, canvasTwo);
 }

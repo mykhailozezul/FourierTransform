@@ -8,12 +8,22 @@ class GraphClass {
     this.centerX = 0;
     this.centerY = 0;
     this.clickPos = { x: 0, y: 0, isClicked: false };
-    this.trigFuncX = (x) => Math.cos(x);
-    this.trigFuncY = (y) => Math.sin(y);
+    //array of objects, each object has trig function
+    this.trigFunc = [
+      {
+        x: (x) => Math.cos(x),
+        y: (y) => Math.sin(y),
+        color: "rgb(250,100,0)",
+        start: -360,
+        end: 360,
+      },
+    ];
   }
 
   set scale(value) {
+    //minimal grid scale.
     const minScale = 8;
+    //max grid scale
     const maxScale = 200;
     if (value <= minScale) {
       this._scale = minScale;
@@ -38,13 +48,13 @@ class GraphClass {
     this.centerX = this.width / 2;
     this.centerY = this.height / 2;
     this.drawGrid();
-    this.drawGraph(this.trigFuncX, this.trigFuncY);
+    this.drawGraph(this.trigFunc);
     this.onScaleEvent();
     this.onMoveEvent();
   }
 
   drawGrid() {
-    this.context.strokeStyle = "rgb(200,200,200)";
+    this.context.strokeStyle = "rgb(100,100,100)";
     this.context.lineWidth = 0.3;
     this.context.beginPath();
     //draw grid rows.
@@ -75,7 +85,7 @@ class GraphClass {
   updateCanvas() {
     this.clearCanvas();
     this.drawGrid();
-    this.drawGraph(this.trigFuncX, this.trigFuncY);
+    this.drawGraph(this.trigFunc);
   }
 
   getMousePos(mouseX, mouseY) {
@@ -139,18 +149,20 @@ class GraphClass {
     });
   }
 
-  drawGraph(graphFuncX, graphFuncY) {
+  drawGraph(graphArr) {
     let degToRad = this.degToRad;
-    this.context.beginPath();
-    this.context.lineWidth = 1;
-    this.context.strokeStyle = "rgb(250,0,0)";
-    for (let x = 0; x <= 360; x++) {
-      this.context.lineTo(
-        graphFuncX(degToRad(x)) * this.scale + this.centerX,
-        graphFuncY(degToRad(x)) * this.scale + this.centerY
-      );
-    }
-    this.context.stroke();
+    graphArr.forEach((graphObj) => {
+      this.context.beginPath();
+      this.context.lineWidth = 1;
+      this.context.strokeStyle = graphObj.color;
+      for (let x = graphObj.start; x <= graphObj.end; x++) {
+        this.context.lineTo(
+          graphObj.x(degToRad(x)) * this.scale + this.centerX,
+          graphObj.y(degToRad(x)) * this.scale + this.centerY
+        );
+      }
+      this.context.stroke();
+    });
   }
 
   degToRad(angle) {
